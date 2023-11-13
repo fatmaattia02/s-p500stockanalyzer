@@ -270,7 +270,7 @@ def render_tab1():
     with col3:
 
         @st.cache_data
-        def GetStockData(ticker, duration):
+        def GetStockData(ticker, period):
             end_date = datetime.now()
             if period == "1M":
                 start_date = end_date - timedelta(days=30)
@@ -344,11 +344,28 @@ def render_tab2():
         fig.add_trace(go.Scatter(name='Moving Average/ 50 days',
                       x=M_Average['Date'], y=M_Average['M50'], marker_color='turquoise'), secondary_y=True)
 
+    # Define the scaling factor for the maximum volume
+    scaling_factor = 1.5
+    
+    # Check if volume should be displayed and if there is valid volume data
     if show_volume and not stock_price['Volume'].empty and not stock_price['Volume'].isnull().all():
-        max_volume = max(stock_price['Volume']) * 1.3
-        fig.add_trace(go.Bar(name='Volume of shares',
-                      x=stock_price.index, y=stock_price['Volume']))
-        fig.update_layout(yaxis1=dict(range=[0, max_volume]))
+        # Calculate an appropriate upper limit for the y-axis using the modified scaling factor
+        max_volume = max(stock_price['Volume']) * scaling_factor
+        
+        # Add a bar trace for the volume of shares to the Plotly figure
+        fig.add_trace(go.Bar(
+            name='Volume of Shares',
+            x=stock_price.index,
+            y=stock_price['Volume']
+        ))
+        
+        # Update the layout to set the y-axis range for the volume plot
+        fig.update_layout(
+            yaxis1=dict(range=[0, max_volume]),
+            title='Stock Price with Volume',
+            xaxis_title='Date',
+            yaxis_title='Volume'
+        )
 
     if selected_chart_type == 'Line':
         fig.add_trace(go.Scatter(name='Close Value', x=stock_price.index,
