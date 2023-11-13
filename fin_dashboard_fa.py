@@ -12,7 +12,6 @@ import plotly.graph_objects as go
 from datetime import datetime, timedelta
 import yfinance as yf
 import streamlit as st
-import base64
 from plotly.subplots import make_subplots
 from stocknews import StockNews
 
@@ -116,14 +115,6 @@ class YFinance:
 # Header
 # ==============================================================================
 
-
-def download_csv(dataframe, filename='download.csv'):
-    csv = dataframe.to_csv(index=False)
-    b64 = base64.b64encode(csv.encode()).decode()
-    href = f'<a href="data:file/csv;base64,{b64}" download="{filename}">Download CSV</a>'
-    return href
-
-
 def render_sidebar():
     # Create two columns in the sidebar
     data_source_col1, data_source_col2 = st.sidebar.columns([1, 1])
@@ -153,11 +144,6 @@ def render_sidebar():
     if st.sidebar.button("Update"):
         if ticker:
             st.write(f"Updating stock data for {ticker}...")
-            stock_data = yf.download(ticker)
-
-    stock_data = yf.download(ticker)
-    st.sidebar.markdown(download_csv(stock_data, ticker), unsafe_allow_html=True)
-
 
     return ticker, start_date, end_date
 
