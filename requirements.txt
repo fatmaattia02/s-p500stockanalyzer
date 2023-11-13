@@ -5,6 +5,5 @@ plotly
 datetime
 yfinance
 streamlit
-base64
 plotly
 stocknews
